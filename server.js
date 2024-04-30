@@ -25,12 +25,7 @@ app.use(session({
 
 
 
-app.get('/' , async(req, res) => {
-    const posts = await Post.find({});
-    res.render('homePage.ejs', {
-        posts: posts
-    })
-})
+
 
 app.get('/account/login' , (req, res) => {
     res.render('./account/login.ejs')
@@ -46,21 +41,38 @@ app.post('/account/new', async (req, res) => {
     const account = await User.create(req.body);
     res.redirect('/');
 })
-app.post('/post/new', async (req, res) => {
-    const post = await Post.create(req.body);
-    res.redirect('/');
-})
+
 app.post('/account/login' ,async (req, res) => {
     const emailInDatabase = await User.findOne({email:  req.body.email});
 
     if(!emailInDatabase) return res.send('Login failed. email not found');
 
-    req.session.email = {
-        email: emailInDatabase.email,
+    req.session.user = {
+        username: emailInDatabase.username,
     }
 
     res.redirect('/');
 
+})
+app.get('/' , async(req, res) => {
+    const posts = await Post.find({});
+    res.render('homePage.ejs', {
+        posts: posts,
+        user: req.session.user
+    })
+})
+
+app.post('/post/new', async (req, res) => {
+    const post = await Post.create({
+        title: req.body.title,
+        content: req.body.content,
+        createdBy: req.session.user.username,
+    });
+    res.redirect('/');
+})
+app.get('/sign-out', (req, res) => {
+    req.session.destroy();
+    res.redirect('/')
 })
 
 
