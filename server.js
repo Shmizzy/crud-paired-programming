@@ -49,6 +49,7 @@ app.post('/account/login' ,async (req, res) => {
 
     req.session.user = {
         username: emailInDatabase.username,
+        id: emailInDatabase.id
     }
 
     res.redirect('/');
@@ -67,12 +68,35 @@ app.post('/post/new', async (req, res) => {
         title: req.body.title,
         content: req.body.content,
         createdBy: req.session.user.username,
+        accountId: req.session.user.id,
     });
     res.redirect('/');
+})
+app.delete('/post/:postId', async (req, res) => {
+
+    const selectPost = await Post.findById(req.params.postId);
+
+   if(req.session.user){
+        if(req.session.user.id === selectPost.accountId) {
+            await Post.findByIdAndDelete(req.params.postId);
+        }
+   }
+
+    res.redirect('/');
+
+    
 })
 app.get('/sign-out', (req, res) => {
     req.session.destroy();
     res.redirect('/')
+})
+
+app.get('/account/:accountId/show', async (req, res) => {
+    const user = await User.findById(req.params.accountId);
+    
+    res.render('./account/show.ejs',{
+        user: user
+    })
 })
 
 

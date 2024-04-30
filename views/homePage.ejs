@@ -20,7 +20,11 @@
             <% posts.forEach(element => { %>
                 <div id="post-card">
                     <h2><%= element.title %></h2>
-                    <p><%= element.content %></p>
+                    <a href="/account/<%= element.accountId %>/show"><p><%= element.createdBy %></p></a>
+                    <p><%= element.content %></p>         
+                    <form action="/post/<%=element._id%>?_method=DELETE" method="POST">
+                        <button type="submit">Ⅹ</button>
+                    </form>
                 </div>
             <% }) %> 
         </div>
