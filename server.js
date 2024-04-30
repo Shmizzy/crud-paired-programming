@@ -11,6 +11,7 @@ mongoose.connect(process.env.MONGODB_URI);
 
 const User = require('./models/user.js');
 const Post = require('./models/post.js');
+const post = require('./models/post.js');
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public')); 
@@ -46,9 +47,10 @@ app.get('/post/new', (req, res) => {
 app.get('/post/:postId/edit' , async(req, res) => {
     const foundPost = await Post.findById(req.params.postId);
     
+    
     res.render('./post/edit.ejs', {
         user: req.session.user,
-        post: foundPost
+        post: foundPost,
     })
 })
 app.post('/account/new', async (req, res) => {
@@ -113,8 +115,13 @@ app.get('/account/:accountId/show', async (req, res) => {
     })
 })
 app.put('/post/:postId/edit', async (req, res) => {
-    const selectPost = await Post.findByIdAndUpdate(req.params.postId, req.body);
+    const selectPost = await Post.findById(req.params.postId);
 
+    if(req.session.user){
+        if(req.session.user.id === selectPost.accountId) {
+            await Post.findByIdAndUpdate(req.params.postId, req.body);
+        }
+   }
     res.redirect('/');
 
 })
