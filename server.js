@@ -28,14 +28,28 @@ app.use(session({
 
 
 app.get('/account/login' , (req, res) => {
-    res.render('./account/login.ejs')
+    res.render('./account/login.ejs', {
+        user: req.session.user
+    })
 })
 
 app.get('/account/new', (req, res) => {
-    res.render('./account/new.ejs')
+    res.render('./account/new.ejs', {
+        user: req.session.user
+    } )
 })
 app.get('/post/new', (req, res) => {
-    res.render('./post/new.ejs')
+    res.render('./post/new.ejs', {
+        user: req.session.user
+    })
+})
+app.get('/post/:postId/edit' , async(req, res) => {
+    const foundPost = await Post.findById(req.params.postId);
+    
+    res.render('./post/edit.ejs', {
+        user: req.session.user,
+        post: foundPost
+    })
 })
 app.post('/account/new', async (req, res) => {
     const account = await User.create(req.body);
@@ -97,6 +111,12 @@ app.get('/account/:accountId/show', async (req, res) => {
     res.render('./account/show.ejs',{
         user: user
     })
+})
+app.put('/post/:postId/edit', async (req, res) => {
+    const selectPost = await Post.findByIdAndUpdate(req.params.postId, req.body);
+
+    res.redirect('/');
+
 })
 
 
