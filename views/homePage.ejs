@@ -17,7 +17,12 @@
                 <h2>Posts</h2>
                 <a href="/post/new">Create New Post</a>
             </div>
-            <div id="posts">some text</div>
+            <% posts.forEach(element => { %>
+                <div id="post-card">
+                    <h2><%= element.title %></h2>
+                    <p><%= element.content %></p>
+                </div>
+            <% }) %> 
         </div>
     </div>
 </body>

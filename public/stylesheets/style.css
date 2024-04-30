@@ -62,7 +62,7 @@ textarea{
     background-color: rgb(223, 67, 67);
     text-decoration: underline;
 }
-.signup-container , .post-container{
+.signup-container , .post-container, .login-container{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -103,4 +103,10 @@ textarea{
 }
 #post-container{
     width: 100%;
+}
+#post-card{
+    background-color: white;
+    border: 1px solid lightgray;
+    border-radius: 8px;
+    padding: 10px;
 }
